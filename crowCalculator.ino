@@ -2,8 +2,8 @@
 #include <Keypad.h>
 #include <string.h>
 
-const byte ROWS = 4; //4 рядки
-const byte COLS = 4; // 4 колони
+const byte ROWS = 4; //4 Rows
+const byte COLS = 4; // 4 Colums
 
 char keys [COLS][ROWS] = { // keymap
   {'+','-','*','/'},
