@@ -9,7 +9,7 @@ char keys [COLS][ROWS] = { // keymap
   {'+','-','*','/'},
   {'7','8','9','B'},
   {'4','5','6','C'},
-  {'1','2','3','.'}
+  {'1','2','3','='}
   };
 // char keys [COLS][ROWS] = { // second keymap
 //   {'+','-','*','/'},
@@ -58,44 +58,32 @@ void loop() {
 
     } else if (key ='B' && key != 'C' ){ // pressed key = B
       if (lcdCursorPosition > number.length()){
-        // lcd.write(' '); // cursor position +1;
         lcdCursorPosition --;
-        // lcdCursorPosition --;
-        // lcdCursorPosition -= 2;
-        lcd.setCursor(lcdCursorPosition, 0);
-        // lcd.setCursor(lcdCursorPosition, 0);
+        lcd.setCursor(lcdCursorPosition - 1, 0);
         
         number.trim();
 
-        Serial.println("Cursor position");
-        Serial.println(lcdCursorPosition + 1);
+        Serial.println("Cursor position1");
+        Serial.println(lcdCursorPosition);
         Serial.println("Number:");
         Serial.println(number);
       } else if (lcdCursorPosition == number.length()){
         Serial.println("перехід в блок 2");
-        lcdCursorPosition = 1900;
         lcd.write(' ');
-        lcd.setCursor(lcdCursorPosition, 0);
-        lcd.write(' ');
+        lcdCursorPosition--;
+        lcd.setCursor(lcdCursorPosition - 1, 0);
         number.remove(lcdCursorPosition, 1); // delete last number, dont display, just for logic.
 
-        Serial.println("Cursor position");
-        Serial.println(lcdCursorPosition + 1);
+        Serial.println("Cursor position2");
+        Serial.println(lcdCursorPosition);
         Serial.println("Number:");
         Serial.println(number);
+      } 
+      if (lcdCursorPosition <= 0){  // check if cursor position smaller than 0
+        lcd.setCursor(0, 0);
+        lcdCursorPosition = 1;
+        Serial.println("achtung");
       }
-      
-      
-      
-      
-       
-      
-      Serial.println("Cursor position");
-      Serial.println(lcdCursorPosition);
-      Serial.println("Number:");
-      Serial.println(number);
-
-      
     }
     
   }
