@@ -24,8 +24,20 @@ Keypad keypad = Keypad(makeKeymap(keys), rowPins,colPins, ROWS, COLS);
 
 LiquidCrystal lcd(3, 5, 6,7,8,9);
 int lcdCursorPosition = 1;
+int lcdLinePosition = 0;
 String number;
 
+void debug(String num, int pos, char key, int line){
+    Serial.print("POS:");
+    Serial.println(pos);
+    Serial.print("NUM:");
+    Serial.println(num);
+    Serial.print("KEY:");
+    Serial.println(key);
+    Serial.print("LINE:");
+    Serial.println(line);
+    Serial.println(' ');
+}
 void setup() {
   Serial.begin(9600);
   lcd.begin(16, 2); // lcd initialization
@@ -34,58 +46,48 @@ void setup() {
 }
 void loop() {
   char key = keypad.getKey(); // getting a pressed key
-  if (key) { // if key pressed print Serial
-    Serial.println("Key pressed:");
-    Serial.println(key);
-
-    if (key != 'B' && key !='C'){ // checking the key
-      lcd.write(key); // writing key
-      lcdCursorPosition++;
-      
-      Serial.println("Cursor position");
-      Serial.println(lcdCursorPosition);//debug
-      number += key; 
-      number.trim();
-      Serial.println("Number:");
-      Serial.println(number);
-
-    } else if (key = 'C' && key !='B'){ // presed key = C
-      lcd.clear();
+  if (key) {
+    switch(key){
+      case 'C':lcd.clear();
       lcdCursorPosition = 1;
       number = ' ';
+      debug(number,lcdCursorPosition, key, lcdLinePosition);
+      break;
 
-      Serial.println("Cursor position");
-      Serial.println(lcdCursorPosition); // debug
-
-    } else if (key ='B' && key != 'C' ){ // pressed key = B
-      if (lcdCursorPosition > number.length()){
+      case 'B': 
+      if (lcdCursorPosition > number.length(){
         lcdCursorPosition --;
-        lcd.setCursor(lcdCursorPosition - 1, 0);
-        
+        lcd.setCursor(lcdCursorPosition - 1, lcdLinePosition);
         number.trim();
-
-        Serial.println("Cursor position1");
-        Serial.println(lcdCursorPosition);
-        Serial.println("Number:");
-        Serial.println(number);
+        debug(number,lcdCursorPosition, key, lcdLinePosition);
       } else if (lcdCursorPosition == number.length()){
         Serial.println("перехід в блок 2");
         lcd.write(' ');
         lcdCursorPosition--;
-        lcd.setCursor(lcdCursorPosition - 1, 0);
+        lcd.setCursor(lcdCursorPosition - 1, lcdLinePosition);
         number.remove(lcdCursorPosition, 1); // delete last number, dont display, just for logic.
-
-        Serial.println("Cursor position2");
-        Serial.println(lcdCursorPosition);
-        Serial.println("Number:");
-        Serial.println(number);
+        debug(number,lcdCursorPosition, key, lcdLinePosition);
       } 
+      break;
+      
+      default:
+      lcd.write(key); // writing key
+      lcdCursorPosition++;
+      number += key; 
+      number.trim();
+      debug(number,lcdCursorPosition, key, lcdLinePosition);
+      break;
+    }
       if (lcdCursorPosition <= 0){  // check if cursor position smaller than 0
         lcd.setCursor(0, 0);
         lcdCursorPosition = 1;
         Serial.println("achtung");
+      }else if(lcdCursorPosition > 16){
+        lcdLinePosition = 1;
+        lcdCursorPosition = 0;
+        lcd.setCursor(lcdCursorPosition, lcdLinePosition);
       }
+      
     }
     
   }
-}
